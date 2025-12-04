@@ -1,0 +1,15 @@
+[project]
+name='vulnscout_ci_demo'
+
+[build]
+docker_run_args="-v /run/docker.sock:/run/docker.sock"
+command='kas build ./kas/main.yaml'
+files='build/tmp/deploy/images/README.pdf'
+archive='%Po-%Pn-$(scripts/get-version).tar.gz'
+tar_options='-h'
+tar_transform='yes'
+flavors='vulnscout_ci'
+
+[vulnscout_ci]
+command ='
+    kas build ./kas/main.yaml -- -c vulnscout_ci'
