@@ -58,11 +58,7 @@ pipeline {
             echo 'Build failed!'
         }
         unstable {
-<<<<<<< Updated upstream
             echo 'CVEs detected - build marked as unstable'
-=======
-            echo 'CVEs detected - build marked as unstable  '
->>>>>>> Stashed changes
         }
     }
 }
