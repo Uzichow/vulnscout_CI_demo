@@ -12,5 +12,4 @@ tar_transform='yes'
 flavors='vulnscout_ci'
 
 [vulnscout_ci]
-command ='
-    kas build ./kas/main.yaml -- -c vulnscout_ci'
+command='kas build ./kas/main.yaml -- -c vulnscout_ci'
