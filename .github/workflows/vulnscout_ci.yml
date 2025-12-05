@@ -1,0 +1,28 @@
+name: VulnScout CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  vulnscout-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install cqfd on the CI
+        if: matrix.target != 'Docker'
+        run: |
+          git clone https://github.com/savoirfairelinux/cqfd.git
+          cd cqfd
+          sudo make install
+
+      - name: Init cqfd container on the project
+        if: matrix.target != 'Docker'
+        run: cqfd init
+
+      - name: Run vulnscout_ci
+        run: cqfd -b vulnscout_ci
