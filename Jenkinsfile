@@ -25,7 +25,16 @@ pipeline {
         // Initialize cqfd
         stage('Initialize cqfd') {
             steps {
-                sh 'cqfd init'
+                sh '''
+                    echo "Current directory: $(pwd)"
+                    echo "Listing files:"
+                    ls -la
+                    echo "Checking kas directory:"
+                    ls -la kas/
+                    echo "cqfd version:"
+                    cqfd --version || echo "cqfd --version not supported"
+                    cqfd init
+                '''
             }
         }
         //Launch vulnscout_ci via cqfd
