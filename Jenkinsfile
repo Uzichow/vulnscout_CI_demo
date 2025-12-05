@@ -19,7 +19,7 @@ pipeline {
                 '''
             }
         }
-
+        // Initialize cqfd
         stage('Initialize cqfd') {
             steps {
                 sh 'cqfd init'
