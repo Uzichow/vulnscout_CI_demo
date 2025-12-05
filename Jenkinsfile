@@ -7,7 +7,7 @@ pipeline {
                 checkout scm
             }
         }
-
+        // Check and install cqfd if not present
         stage('Install cqfd') {
             steps {
                 sh '''
