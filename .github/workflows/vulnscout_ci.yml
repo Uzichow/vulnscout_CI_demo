@@ -1,0 +1,64 @@
+name: VulnScout CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  vulnscout-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable user namespaces
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Install cqfd on the CI
+        if: matrix.target != 'Docker'
+        run: |
+          git clone https://github.com/savoirfairelinux/cqfd.git
+          cd cqfd
+          sudo make install
+
+      - name: Init cqfd container on the project
+        if: matrix.target != 'Docker'
+        run: cqfd init
+
+      - name: Run vulnscout_ci and capture CVEs
+        id: run_cqfd
+        run: |
+          set +e
+          cqfd -b vulnscout_ci > cqfd_output.txt 2>&1
+          echo $? > cqfd_exit_code.txt
+          grep -Eo 'CVE-[0-9]{4}-[0-9]+' cqfd_output.txt | sort | uniq > cve_report.txt
+          cat cve_report.txt
+
+      - name: Upload CVE report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cve_report
+          path: cve_report.txt
+
+      - name: Download previous CVE report
+        uses: actions/download-artifact@v4
+        with:
+          name: cve_report
+        continue-on-error: true
+
+      - name: Compare CVE reports
+        run: |
+          if [ -f cve_report.txt ] && [ -f cve_report/cve_report.txt ]; then
+            comm -13 <(sort cve_report/cve_report.txt) <(sort cve_report.txt) > new_cves.txt
+            if [ -s new_cves.txt ]; then
+              echo "New CVEs detected:" && cat new_cves.txt
+              exit 1
+            else
+              echo "No new CVEs detected."
+            fi
+          else
+            echo "No previous CVE report to compare. Skipping comparison."
+          fi
