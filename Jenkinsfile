@@ -25,7 +25,7 @@ pipeline {
                 sh 'cqfd init'
             }
         }
-
+        //Launch vulnscout_ci via cqfd
         stage('Run vulnscout_ci') {
             steps {
                 script {
