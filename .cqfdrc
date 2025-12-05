@@ -13,3 +13,4 @@ flavors='vulnscout_ci'
 
 [vulnscout_ci]
 command='kas build ./kas/main.yaml -- -c vulnscout_ci'
+docker_run_args="-v /run/docker.sock:/run/docker.sock"
