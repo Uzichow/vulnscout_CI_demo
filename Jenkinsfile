@@ -26,13 +26,6 @@ pipeline {
         stage('Initialize cqfd') {
             steps {
                 sh '''
-                    echo "Current directory: $(pwd)"
-                    echo "Listing files:"
-                    ls -la
-                    echo "Checking kas directory:"
-                    ls -la kas/
-                    echo "cqfd version:"
-                    cqfd --version || echo "cqfd --version not supported"
                     cqfd init
                 '''
             }
@@ -41,9 +34,17 @@ pipeline {
         stage('Run vulnscout_ci') {
             steps {
                 script {
-                    def result = sh(script: 'cqfd -b vulnscout_ci', returnStatus: true)
+                    def result = sh(script: 'cqfd -b vulnscout_ci 2>&1 | tee build_output.log', returnStatus: true)
                     if (result != 0) {
-                        echo "vulnscout_ci detected CVEs (exit code: ${result})"
+                        echo "vulnscout_ci exited with code: ${result}"
+                        // Try to find and display error logs
+                        sh '''
+                            echo "=== Searching for error logs ==="
+                            find build/tmp/work -name "log.do_vulnscout_ci.*" -type f 2>/dev/null | head -5 | while read logfile; do
+                                echo "=== Content of $logfile ==="
+                                tail -100 "$logfile" || true
+                            done
+                        '''
                         currentBuild.result = 'UNSTABLE'
                     }
                 }
@@ -61,7 +62,7 @@ pipeline {
 
     post {
         always {
-            cleanWs()
+
         }
         failure {
             echo 'Build failed!'
