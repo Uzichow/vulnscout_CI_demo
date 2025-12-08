@@ -1,4 +1,5 @@
 [project]
+org='savoirfairelinux'
 name='vulnscout_ci_demo'
 
 [build]
