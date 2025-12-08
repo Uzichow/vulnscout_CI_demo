@@ -8,7 +8,7 @@ on:
 
 jobs:
   vulnscout-ci:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, qlehoux-pc]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
