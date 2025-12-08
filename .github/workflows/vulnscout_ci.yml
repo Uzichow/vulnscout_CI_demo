@@ -49,6 +49,10 @@ jobs:
           name: cve_report
         continue-on-error: true
 
+      - name: Cleanup workspace permissions
+        if: always()
+        run: sudo chown -R $USER .
+
       - name: Compare CVE reports
         run: |
           if [ -f cve_report.txt ] && [ -f cve_report/cve_report.txt ]; then
