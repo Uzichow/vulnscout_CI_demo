@@ -32,8 +32,8 @@ jobs:
         id: run_cqfd
         run: |
           set +e
-          cqfd -b vulnscout_ci > cqfd_output.txt 2>&1
-          echo $? > cqfd_exit_code.txt
+          cqfd -b vulnscout_ci 2>&1 | tee cqfd_output.txt
+          echo ${PIPESTATUS[0]} > cqfd_exit_code.txt
           grep -Eo 'CVE-[0-9]{4}-[0-9]+' cqfd_output.txt | sort | uniq > cve_report.txt
           cat cve_report.txt
 
