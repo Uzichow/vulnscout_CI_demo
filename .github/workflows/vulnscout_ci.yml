@@ -34,8 +34,7 @@ jobs:
           set +e
           cqfd -b vulnscout_ci 2>&1 | tee cqfd_output.txt
           echo ${PIPESTATUS[0]} > cqfd_exit_code.txt
-          grep -Eo 'CVE-[0-9]{4}-[0-9]+' cqfd_output.txt | sort | uniq > cve_report.txt
-          cat cve_report.txt
+          grep -Eoi 'CVE-[0-9]{4}-[0-9]+' cqfd_output.txt | sort | uniq > cve_report.txt
 
       - name: Upload CVE report artifact
         uses: actions/upload-artifact@v4
@@ -57,10 +56,17 @@ jobs:
         run: |
           if [ -f cve_report.txt ] && [ -f cve_report/cve_report.txt ]; then
             comm -13 <(sort cve_report/cve_report.txt) <(sort cve_report.txt) > new_cves.txt
+            comm -23 <(sort cve_report/cve_report.txt) <(sort cve_report.txt) > fixed_cves.txt
             if [ -s new_cves.txt ]; then
+              if [ -s fixed_cves.txt ]; then
+                echo "Fixed CVEs: " && cat fixed_cves.txt
+              fi
               echo "New CVEs detected:" && cat new_cves.txt
               exit 1
             else
+            if [ -s fixed_cves.txt ]; then
+                echo "Fixed CVEs: " && cat fixed_cves.txt
+            fi
               echo "No new CVEs detected."
             fi
           else
