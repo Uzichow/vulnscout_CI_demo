@@ -30,15 +30,20 @@ jobs:
 
       - name: Download previous CVE report
         id: download_previous
-        uses: actions/download-artifact@v4
+        uses: dawidd6/action-download-artifact@v3
         with:
           name: cve_report
           path: previous_cve_report
-        continue-on-error: true
+          workflow: vulnscout_ci.yml
+          if_no_artifact_found: ignore
 
       - name: Check download status
-        if: steps.download_previous.outcome == 'failure'
-        run: echo "No previous CVE report found. This is the first run or previous artifacts have expired."
+        run: |
+          if [ ! -f previous_cve_report/cve_report.txt ]; then
+            echo "No previous CVE report found. This is the first run or previous artifacts have expired."
+          else
+            echo "Previous CVE report found and downloaded successfully."
+          fi
 
       - name: Run vulnscout_ci and capture CVEs
         id: run_cqfd
