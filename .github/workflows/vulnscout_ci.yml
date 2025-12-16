@@ -29,11 +29,16 @@ jobs:
         run: cqfd init
 
       - name: Download previous CVE report
+        id: download_previous
         uses: actions/download-artifact@v4
         with:
           name: cve_report
           path: previous_cve_report
         continue-on-error: true
+
+      - name: Check download status
+        if: steps.download_previous.outcome == 'failure'
+        run: echo "No previous CVE report found. This is the first run or previous artifacts have expired."
 
       - name: Run vulnscout_ci and capture CVEs
         id: run_cqfd
