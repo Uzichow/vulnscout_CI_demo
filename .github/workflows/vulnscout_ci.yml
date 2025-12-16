@@ -28,6 +28,13 @@ jobs:
         if: matrix.target != 'Docker'
         run: cqfd init
 
+      - name: Download previous CVE report
+        uses: actions/download-artifact@v4
+        with:
+          name: cve_report
+          path: previous_cve_report
+        continue-on-error: true
+
       - name: Run vulnscout_ci and capture CVEs
         id: run_cqfd
         run: |
@@ -42,21 +49,15 @@ jobs:
           name: cve_report
           path: cve_report.txt
 
-      - name: Download previous CVE report
-        uses: actions/download-artifact@v4
-        with:
-          name: cve_report
-        continue-on-error: true
-
       - name: Cleanup workspace permissions
         if: always()
         run: sudo chown -R $USER .
 
       - name: Compare CVE reports
         run: |
-          if [ -f cve_report.txt ] && [ -f cve_report/cve_report.txt ]; then
-            comm -13 <(sort cve_report/cve_report.txt) <(sort cve_report.txt) > new_cves.txt
-            comm -23 <(sort cve_report/cve_report.txt) <(sort cve_report.txt) > fixed_cves.txt
+          if [ -f cve_report.txt ] && [ -f previous_cve_report/cve_report.txt ]; then
+            comm -13 <(sort previous_cve_report/cve_report.txt) <(sort cve_report.txt) > new_cves.txt
+            comm -23 <(sort previous_cve_report/cve_report.txt) <(sort cve_report.txt) > fixed_cves.txt
             if [ -s new_cves.txt ]; then
               if [ -s fixed_cves.txt ]; then
                 echo "Fixed CVEs: " && cat fixed_cves.txt
