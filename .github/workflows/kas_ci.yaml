@@ -1,0 +1,28 @@
+name: VulnScout CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  vulnscout-ci:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable user namespaces
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Install kas on the CI
+        if: matrix.target != 'kas'
+        run: |
+          pip3 install kas
+
+      - name: Run vulnscout_ci and capture CVEs
+        id: run_cqfd
+        run: |
+          kas build ./kas/main.yaml -- -c vulnscout_ci
