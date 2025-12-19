@@ -33,7 +33,4 @@ jobs:
       - name: Launch VulnScout CI
         run: |
           source bitbake-build/oe-nodistro-master/build/init-build-env
-          VULNSCOUT_FAIL_CONDITION="cvss >= 9.0" \
-          BB_ENV_PASSTHROUGH="VULNSCOUT_FAIL_CONDITION" \
-          bitbake core-image-minimal \
-          -c vulnscout_ci
+          VULNSCOUT_FAIL_CONDITION="cvss >= 9.0" BB_ENV_PASSTHROUGH="VULNSCOUT_FAIL_CONDITION" bitbake core-image-minimal -c vulnscout_ci
