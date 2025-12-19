@@ -28,11 +28,11 @@ jobs:
           nodistro \
           machine/qemux86-64
 
-        name: Source the build environment
+      - name: Source the build environment
         run: |
           source bitbake-build/oe-nodistro-master/build/init-build-env
 
-        name: Launch VulnScout CI
+      - name: Launch VulnScout CI
         run: |
           VULNSCOUT_FAIL_CONDITION="cvss >= 9.0" \
           BB_ENV_PASSTHROUGH="VULNSCOUT_FAIL_CONDITION" \
