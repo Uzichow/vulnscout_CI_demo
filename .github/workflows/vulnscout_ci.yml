@@ -60,6 +60,7 @@ jobs:
           cqfd -b vulnscout_ci 2>&1 | tee cqfd_output.txt
           echo ${PIPESTATUS[0]} > cqfd_exit_code.txt
           grep -Eoi 'CVE-[0-9]{4}-[0-9]+' cqfd_output.txt | sort | uniq > cve_report.txt
+        continue-on-error: true
 
       - name: Upload CVE report artifact
         uses: actions/upload-artifact@v4
