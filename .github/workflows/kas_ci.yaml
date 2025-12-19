@@ -18,9 +18,11 @@ jobs:
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
       - name: Install kas on the CI
-        if: matrix.target != 'kas'
         run: |
-          pip3 install kas
+          which kas
+          if [ $? -ne 0 ]; then
+            pip3 install kas
+          fi
 
       - name: Run vulnscout_ci and capture CVEs
         id: run_cqfd
