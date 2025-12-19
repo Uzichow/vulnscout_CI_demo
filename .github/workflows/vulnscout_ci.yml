@@ -58,9 +58,17 @@ jobs:
         run: |
           set +e
           cqfd -b vulnscout_ci 2>&1 | tee cqfd_output.txt
-          echo ${PIPESTATUS[0]} > cqfd_exit_code.txt
+          exit_code=${PIPESTATUS[0]}
+          echo $exit_code > cqfd_exit_code.txt
           grep -Eoi 'CVE-[0-9]{4}-[0-9]+' cqfd_output.txt | sort | uniq > cve_report.txt
-        continue-on-error: true
+
+          if [ $exit_code -eq 2 ]; then
+            echo "⚠️  Build completed with exit code 2 (expected for CVE detection)"
+            exit 0
+          elif [ $exit_code -ne 0 ]; then
+            echo "❌ Build failed with exit code $exit_code"
+            exit $exit_code
+          fi
 
       - name: Upload CVE report artifact
         uses: actions/upload-artifact@v4
