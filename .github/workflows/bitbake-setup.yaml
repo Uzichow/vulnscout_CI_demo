@@ -17,7 +17,7 @@ jobs:
         run: |
           sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
-      - name: Launch bitbake-setup
+      - name: Launch bitbake-setup init
         id: run_cqfd
         run: |
           bitbake/bin/bitbake-setup \
