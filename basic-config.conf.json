@@ -1,0 +1,66 @@
+{
+    "description": "OpenEmbedded - 'nodistro' basic configuration",
+    "sources": {
+        "bitbake": {
+            "git-remote": {
+                "remotes": {
+                    "origin": {
+                        "uri": "https://git.openembedded.org/bitbake"
+                    }
+                },
+                "branch": "master",
+                "rev": "master"
+            }
+        },
+        "openembedded-core": {
+            "git-remote": {
+                "remotes": {
+                    "origin": {
+                        "uri": "https://git.openembedded.org/openembedded-core"
+                    }
+                },
+                "branch": "whinlatter",
+                "rev": "whinlatter"
+            }
+        },
+        "yocto-docs": {
+            "git-remote": {
+                "remotes": {
+                    "origin": {
+                        "uri": "https://git.yoctoproject.org/yocto-docs"
+                    }
+                },
+                "branch": "whinlatter",
+                "rev": "whinlatter"
+            }
+        },
+        "meta-vulnscout": {
+                "git-remote": {
+                    "remotes": {
+                        "origin": {
+                            "uri": "https://github.com/savoirfairelinux/meta-vulnscout.git"
+                        }
+                    },
+                    "branch": "main",
+                    "rev": "main"
+                }
+            }
+    },
+    "bitbake-setup": {
+        "configurations": [
+        {
+            "name": "nodistro",
+            "description": "OpenEmbedded 'nodistro'",
+            "setup-dir-name": "oe-nodistro-master",
+            "bb-layers": ["openembedded-core/meta", "meta-vulnscout"],
+            "oe-fragments-one-of": {
+                "machine": {
+                    "description": "Target machines",
+                    "options" : ["machine/qemux86-64", "machine/qemuarm64", "machine/qemuriscv64"]
+                }
+            }
+        }
+        ]
+    },
+    "version": "1.0"
+}

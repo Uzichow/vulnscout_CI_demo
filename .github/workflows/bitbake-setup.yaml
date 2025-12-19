@@ -1,0 +1,40 @@
+name: VulnScout CI bitbake-setup
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  vulnscout-ci:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable user namespaces
+        run: |
+          sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Launch bitbake-setup
+        id: run_cqfd
+        run: |
+          bitbake/bin/bitbake-setup \
+          --setting default top-dir-name bitbake-build \
+          init \
+          --non-interactive \
+          ./basic-config.conf.json \
+          nodistro \
+          machine/qemux86-64
+
+        name: Source the build environment
+        run: |
+          source bitbake-build/oe-nodistro-master/build/init-build-env
+
+        name: Launch VulnScout CI
+        run: |
+          VULNSCOUT_FAIL_CONDITION="cvss >= 9.0" \
+          BB_ENV_PASSTHROUGH="VULNSCOUT_FAIL_CONDITION" \
+          bitbake core-image-minimal \
+          -c vulnscout_ci
