@@ -15,14 +15,14 @@ jobs:
 
       - name: Enable user namespaces
         run: |
-          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
       - name: Install cqfd on the CI
         if: matrix.target != 'Docker'
         run: |
           git clone https://github.com/savoirfairelinux/cqfd.git
           cd cqfd
-          sudo make install
+          make install
 
       - name: Init cqfd container on the project
         if: matrix.target != 'Docker'
