@@ -1,4 +1,4 @@
-name: VulnScout CI cqfd + kas
+name: VulnScout CI cqfd + kas with comparing CVEs
 
 on:
   push:
