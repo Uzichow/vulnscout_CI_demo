@@ -1,4 +1,4 @@
-name: VulnScout CI
+name: VulnScout CI cqfd + kas
 
 on:
   push:
