@@ -15,7 +15,7 @@ jobs:
         with:
           submodules: true
 
-      - name: Enable user namespaces
+      - name: Enable user namespace
         run: |
           sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
