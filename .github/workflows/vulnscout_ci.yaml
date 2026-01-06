@@ -1,0 +1,23 @@
+name: VulnScout CI kas
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  vulnscout-ci:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copying vulnscout project
+        run: |
+          git clone https://github.com/savoirfairelinux/vulnscout.git
+
+      - name: Launching Vulnscout CI
+        run: |
+          ./vulnscout/vulnscout.sh --name vulnscout_ci --sbom SBOM_example/core-image-minimal-qemux86-64.rootfs.json \
+          --fail-condition "cvss >= 9.0"
