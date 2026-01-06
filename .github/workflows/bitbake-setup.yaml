@@ -10,6 +10,12 @@ jobs:
   vulnscout-ci:
     runs-on: [self-hosted, linux]
     steps:
+      - name: Clean workspace
+        run: |
+          sudo rm -rf /media/qlehoux/actions-runner/_work/vulnscout_CI_demo/vulnscout_CI_demo/* || true
+          sudo rm -rf /media/qlehoux/actions-runner/_work/vulnscout_CI_demo/vulnscout_CI_demo/.* || true
+        continue-on-error: true
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -39,3 +45,9 @@ jobs:
           source bitbake-build/oe-nodistro-master/build/init-build-env
           echo "After sourcing - VULNSCOUT_FAIL_CONDITION: $VULNSCOUT_FAIL_CONDITION"
           bitbake core-image-minimal -c vulnscout_ci
+
+      - name: Cleanup build artifacts
+        if: always()
+        run: |
+          sudo chown -R qlehoux:qlehoux /media/qlehoux/actions-runner/_work/vulnscout_CI_demo/ || true
+          sudo rm -rf bitbake-build || true
