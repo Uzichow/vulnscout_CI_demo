@@ -32,7 +32,7 @@ jobs:
 
       - name: Launch VulnScout CI with fail condition
         run: |
-          export VULNSCOUT_FAIL_CONDITION="cvss >= 9.0"
           export BB_ENV_PASSTHROUGH="VULNSCOUT_FAIL_CONDITION"
+          export VULNSCOUT_FAIL_CONDITION="cvss >= 9.0"
           source bitbake-build/oe-nodistro-master/build/init-build-env
           bitbake core-image-minimal -c vulnscout_ci
