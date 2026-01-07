@@ -25,11 +25,13 @@ jobs:
           fi
 
       - name: Install cqfd on the CI
-        if: matrix.target != 'Docker'
         run: |
-          git clone https://github.com/savoirfairelinux/cqfd.git
-          cd cqfd
-          make install
+          which cqfd
+          if [ $? -ne 0 ]; then
+            git clone https://github.com/savoirfairelinux/cqfd.git
+            cd cqfd
+            make install
+          fi
 
       - name: Init cqfd container on the project
         if: matrix.target != 'Docker'
