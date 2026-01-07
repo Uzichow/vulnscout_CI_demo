@@ -76,7 +76,7 @@ RUN sed -i "s/# en_US\.UTF-8 UTF-8/en_US\.UTF-8 UTF-8/" /etc/locale.gen \
 	&& locale-gen \
 	&& dpkg-reconfigure locales
 
-RUN pip3 install kas==4.7
+RUN pip3 install kas==4.7 packaging
 
 # Install Docker CLI only (no daemon)
 RUN apt-get update && \
