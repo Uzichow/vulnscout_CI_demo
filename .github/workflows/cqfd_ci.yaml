@@ -34,9 +34,8 @@ jobs:
           fi
 
       - name: Init cqfd container on the project
-        if: matrix.target != 'Docker'
         run: cqfd init
 
-      - name: Run vulnscout_ci and capture CVEs
+      - name: Run vulnscout_ci
         id: run_cqfd
         run: cqfd -b vulnscout_ci
