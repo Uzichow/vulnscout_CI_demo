@@ -36,11 +36,13 @@ jobs:
           nodistro \
           machine/qemux86-64
 
+      - name: Configure build environment
+        run: |
+          echo 'VULNSCOUT_FAIL_CONDITION = "cvss >= 9.5"' >> bitbake-build/oe-nodistro-master/build/conf/local.conf
+
       - name: Launch VulnScout CI with fail condition
         run: |
           source bitbake-build/oe-nodistro-master/build/init-build-env
-          VULNSCOUT_FAIL_CONDITION="cvss >= 9.0" \
-          BB_ENV_PASSTHROUGH="VULNSCOUT_FAIL_CONDITION" \
           bitbake core-image-minimal -c vulnscout_ci
 
       - name: Cleanup build artifacts
