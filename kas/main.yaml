@@ -2,7 +2,7 @@ target: core-image-minimal
 header:
   version: 14
 env:
-  VULNSCOUT_FAIL_CONDITION: "cvss >= 9.5"
+  VULNSCOUT_FAIL_CONDITION: "cvss >= 9.0"
 repos:
   meta-poky:
     url: https://git.yoctoproject.org/poky
