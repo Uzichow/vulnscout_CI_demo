@@ -10,12 +10,6 @@ jobs:
   vulnscout-ci:
     runs-on: [self-hosted, linux]
     steps:
-      - name: Clean workspace
-        run: |
-          sudo rm -rf /media/qlehoux/actions-runner/_work/vulnscout_CI_demo/vulnscout_CI_demo/* || true
-          sudo rm -rf /media/qlehoux/actions-runner/_work/vulnscout_CI_demo/vulnscout_CI_demo/.* || true
-        continue-on-error: true
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -38,15 +32,9 @@ jobs:
 
       - name: Configure build environment
         run: |
-          echo 'VULNSCOUT_FAIL_CONDITION = "cvss >= 9.5"' >> bitbake-build/oe-nodistro-master/build/conf/local.conf
+          echo 'VULNSCOUT_FAIL_CONDITION = "cvss >= 9.0"' >> bitbake-build/oe-nodistro-master/build/conf/local.conf
 
       - name: Launch VulnScout CI with fail condition
         run: |
           source bitbake-build/oe-nodistro-master/build/init-build-env
           bitbake core-image-minimal -c vulnscout_ci
-
-      - name: Cleanup build artifacts
-        if: always()
-        run: |
-          sudo chown -R qlehoux:qlehoux /media/qlehoux/actions-runner/_work/vulnscout_CI_demo/ || true
-          sudo rm -rf bitbake-build || true
