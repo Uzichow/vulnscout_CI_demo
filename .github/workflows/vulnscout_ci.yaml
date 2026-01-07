@@ -19,5 +19,8 @@ jobs:
 
       - name: Launching Vulnscout CI
         run: |
-          ./vulnscout/vulnscout.sh --name vulnscout_ci --sbom "$(pwd)/SBOM_example/core-image-minimal-qemux86-64.rootfs.json" \
+          ./vulnscout/vulnscout.sh \
+          --name vulnscout_ci \
+          --sbom "$(pwd)/SBOM_example/core-image-minimal-qemux86-64.rootfs.spdx.tar.zst" \
+          --cve-check "$(pwd)/SBOM_example/core-image-minimal-qemux86-64.rootfs.json" \
           --fail_condition "cvss >= 9.0"
