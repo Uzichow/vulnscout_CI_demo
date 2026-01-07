@@ -25,6 +25,6 @@ jobs:
           fi
 
       - name: Run vulnscout_ci and capture CVEs
-        id: run_cqfd
+        id: run_kas
         run: |
           kas build ./kas/main.yaml -- -c vulnscout_ci

@@ -1,4 +1,4 @@
-name: VulnScout CI kas
+name: VulnScout CI
 
 on:
   push:
@@ -20,4 +20,4 @@ jobs:
       - name: Launching Vulnscout CI
         run: |
           ./vulnscout/vulnscout.sh --name vulnscout_ci --sbom SBOM_example/core-image-minimal-qemux86-64.rootfs.json \
-          --fail-condition "cvss >= 9.0"
+          --fail_condition "cvss >= 9.0"

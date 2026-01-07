@@ -1,0 +1,40 @@
+name: VulnScout CI cqfd +kas
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  vulnscout-ci:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable user namespaces
+        run: |
+          sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Install kas on the CI
+        run: |
+          which kas
+          if [ $? -ne 0 ]; then
+            pip3 install kas
+          fi
+
+      - name: Install cqfd on the CI
+        if: matrix.target != 'Docker'
+        run: |
+          git clone https://github.com/savoirfairelinux/cqfd.git
+          cd cqfd
+          make install
+
+      - name: Init cqfd container on the project
+        if: matrix.target != 'Docker'
+        run: cqfd init
+
+      - name: Run vulnscout_ci and capture CVEs
+        id: run_cqfd
+        run: cqfd -b vulnscout_ci
